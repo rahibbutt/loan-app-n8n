@@ -1,7 +1,8 @@
 CREATE TABLE `loan_applications` (
-                                     `id` int NOT NULL,
-                                     `amount` decimal(10,2) NOT NULL,
-                                     `term` int NOT NULL,
-                                     `purpose` varchar(255) NOT NULL,
-                                     `submitted_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `amount` DECIMAL(10,2) NOT NULL,
+  `term` INT NOT NULL,
+  `purpose` VARCHAR(255) NOT NULL,
+  `submitted_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
