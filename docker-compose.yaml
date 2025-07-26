@@ -34,7 +34,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./mysql_data:/var/lib/mysql
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -71,8 +71,6 @@ services:
     depends_on:
       - mysql
     volumes:
-      - n8n_data:/home/node/.n8n
+      - ./n8n_data:/home/node/.n8n
 
-volumes:
-  mysql_data:
-  n8n_data:
+volumes: {}

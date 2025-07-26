@@ -1,26 +1,12 @@
 # Node.js dependencies
-frontend/node_modules/
-backend/node_modules/
+frontend/node_modules
+backend/node_modules
 
-# Build outputs
-dist/
-build/
-**/.cache/
-
-# Environment files
-.env
-.env.local
-.env.*.local
-
-# Logs
-logs/
-*.log
-
-# SQLite database files
+# SQLite databases
 backend/data/*.db
 backend/data/*.sqlite
 
-# Docker volumes and data
+# Docker volumes for portability
 mysql_data/
 n8n_data/
 
@@ -32,5 +18,8 @@ n8n_data/
 .DS_Store
 Thumbs.db
 
-# Docker overrides
+# Cache directories
+**/.cache/
+
+# Docker override files
 docker-compose.override.yml
