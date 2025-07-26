@@ -1,0 +1,36 @@
+# Node.js dependencies
+frontend/node_modules/
+backend/node_modules/
+
+# Build outputs
+dist/
+build/
+**/.cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Logs
+logs/
+*.log
+
+# SQLite database files
+backend/data/*.db
+backend/data/*.sqlite
+
+# Docker volumes and data
+mysql_data/
+n8n_data/
+
+# IDE settings
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker overrides
+docker-compose.override.yml

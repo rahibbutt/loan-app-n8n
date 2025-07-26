@@ -1,0 +1,78 @@
+services:
+
+  loan-app-frontend:
+    build:
+      context: ./frontend
+      dockerfile: dev.Dockerfile
+    container_name: loan-app-frontend
+    restart: always
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+
+  loan-app-backend:
+    build:
+      context: ./backend
+      dockerfile: dev.Dockerfile
+    container_name: loan-app-backend
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./backend/src:/app/src
+      - ./backend/data:/app/data
+
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: loan_app
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: rootpassword
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    depends_on:
+      - mysql
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    environment:
+      DB_TYPE: mysqldb
+      DB_MYSQLDB_HOST: mysql
+      DB_MYSQLDB_PORT: 3306
+      DB_MYSQLDB_DATABASE: loan_app
+      DB_MYSQLDB_USER: root
+      DB_MYSQLDB_PASSWORD: rootpassword
+      N8N_BASIC_AUTH_ACTIVE: "true"
+      N8N_BASIC_AUTH_USER: admin
+      N8N_BASIC_AUTH_PASSWORD: admin
+      N8N_CORS: "true"
+      N8N_CORS_ALLOW_ORIGIN: "http://localhost:5173"
+    ports:
+      - "5678:5678"
+    depends_on:
+      - mysql
+    volumes:
+      - n8n_data:/home/node/.n8n
+
+volumes:
+  mysql_data:
+  n8n_data:
