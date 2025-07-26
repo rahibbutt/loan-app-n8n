@@ -1,0 +1,175 @@
+{
+  "name": "loan-workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ed82387f-f2e3-4cfd-8d05-66e1fd3712e7",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "588d067f-a04e-4089-ae09-3f5e11d494a7",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "ed82387f-f2e3-4cfd-8d05-66e1fd3712e7",
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = items[0].json;\n\nconst amount = Number(data.amount);\nconst term = Number(data.term);\nconst purpose = (data.purpose || '').trim();\n\n//console.log('amount:', amount, 'term:', term, 'purpose:', purpose);\nif (!amount || !term || !purpose) {\n  return [{\n    json: {\n      status: 'error',\n      message: 'Invalid loan application: amount, term, and purpose are required.',\n    }\n  }];\n}\n\nreturn items;\n"
+      },
+      "id": "352f6a4f-849b-4c3f-916a-69ad8b28b5c5",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "position": [
+        192,
+        0
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "fromEmail": "rahibbutt@gmail.com",
+        "toEmail": "creativerbot@gmail.com",
+        "subject": "This is the subject",
+        "emailFormat": "text",
+        "text": "Hi there,\n\nWe just wanted to let you know that we have received your loan application request. An agent will check your application and will get back to you shortly. \n\nYours Banking System.",
+        "options": {}
+      },
+      "id": "bc255b22-4afe-4ee2-b974-9075e8689c53",
+      "name": "Send email",
+      "type": "n8n-nodes-base.emailSend",
+      "position": [
+        608,
+        0
+      ],
+      "webhookId": "4ec2b87c-7f94-4017-a7f9-cd4b462d3aa7",
+      "typeVersion": 2.1,
+      "credentials": {
+        "smtp": {
+          "id": "Pjqeo1o4dvrDGpcE",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "table": {
+          "__rl": true,
+          "mode": "list",
+          "value": "loan_applications",
+          "cachedResultName": "loan_applications"
+        },
+        "dataMode": "defineBelow",
+        "valuesToSend": {
+          "values": [
+            {
+              "column": "amount",
+              "value": "={{ $('Webhook').item.json.body.amount }}"
+            },
+            {
+              "column": "term",
+              "value": "={{ $('Webhook').item.json.body.term }}"
+            },
+            {
+              "column": "purpose",
+              "value": "={{ $('Webhook').item.json.body.purpose }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "bb1dbd1b-9221-42cb-beaa-c58efc0a7278",
+      "name": "Insert rows in a table",
+      "type": "n8n-nodes-base.mySql",
+      "position": [
+        400,
+        0
+      ],
+      "typeVersion": 2.4,
+      "credentials": {
+        "mySql": {
+          "id": "hPx6FnEcNszNvqWH",
+          "name": "MySQL account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"status\": \"success\",\n  \"message\": \"Loan application received\"\n}",
+        "options": {}
+      },
+      "id": "5b1314a4-a154-4bf3-b65e-c1d6fd62f985",
+      "name": "Respond to Webhook",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "position": [
+        816,
+        0
+      ],
+      "typeVersion": 1.4
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Code": {
+      "main": [
+        [
+          {
+            "node": "Insert rows in a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send email": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert rows in a table": {
+      "main": [
+        [
+          {
+            "node": "Send email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "96cb2b49-cfc4-4fcf-976a-4587d017cffa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d28bd441916b0b945237f3d33133ea47a3790d669d03d65afbfd181d1690c69d"
+  },
+  "id": "VRp5oYfnx8UjR3cA",
+  "tags": []
+}
