@@ -9,6 +9,7 @@ backend/data/*.sqlite
 # Docker volumes for portability
 mysql_data/
 n8n_data/
+ollama_data
 
 # IDE settings
 .vscode/
